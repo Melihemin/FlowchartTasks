@@ -1,0 +1,37 @@
+graph TD
+    START((Start)) --> LOGIN{User Logged In?}
+    LOGIN -- No --> AUTH[Input Credentials]
+    AUTH --> VAL_AUTH{Valid?}
+    VAL_AUTH -- No --> AUTH
+    VAL_AUTH -- Yes --> BROWSE[Browse Categories]
+    LOGIN -- Yes --> BROWSE
+
+    BROWSE --> PROD[Select Product]
+    PROD --> STOCK_CHK{Stock > 0?}
+    STOCK_CHK -- No --> BROWSE
+    STOCK_CHK -- Yes --> ADD_CART[Add to Cart]
+    
+    ADD_CART --> VIEW_CART{View Cart?}
+    VIEW_CART -- No --> BROWSE
+    VIEW_CART -- Yes --> CART_LOOP[Edit Quantity/Remove]
+    
+    CART_LOOP --> CHECKOUT_BTN{Proceed?}
+    CHECKOUT_BTN -- Yes --> MIN_CHK{Total >= $10?}
+    MIN_CHK -- No --> CART_LOOP
+    
+    MIN_CHK -- Yes --> DISC{Apply Discount?}
+    DISC -- Yes --> VAL_DISC[Apply Promo Code]
+    DISC -- No --> SHIP_CHK
+    VAL_DISC --> SHIP_CHK
+    
+    SHIP_CHK{Total >= $40?}
+    SHIP_CHK -- Yes --> FREE_SHIP[Shipping = $0]
+    SHIP_CHK -- No --> PAID_SHIP[Shipping = $5.99]
+    
+    FREE_SHIP --> PAY_SEL[Select Payment Method]
+    PAID_SHIP --> PAY_SEL
+    
+    PAY_SEL --> PAY_GATE{Payment Success?}
+    PAY_GATE -- No --> PAY_SEL
+    PAY_GATE -- Yes --> FINAL[Update Inventory & Confirm]
+    FINAL --> END((End))

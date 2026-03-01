@@ -1,0 +1,41 @@
+digraph EcommerceSystem {
+    rankdir=TB;
+    node [shape=rectangle, style=filled, color=lightblue];
+    
+    // Control Points in a different color
+    node [color=orange] MinOrderCheck StockCheck PaymentGateway;
+    node [shape=diamond, color=lightgrey] IsLoggedIn ValidPromo;
+
+    START [shape=circle, label="START"];
+    END [shape=circle, label="END"];
+
+    START -> IsLoggedIn;
+    IsLoggedIn -> BrowseProducts [label="Yes"];
+    IsLoggedIn -> LoginScreen [label="No"];
+    
+    LoginScreen -> BrowseProducts [label="Credentials Valid"];
+    
+    BrowseProducts -> StockCheck;
+    StockCheck -> AddToCart [label="In Stock"];
+    StockCheck -> BrowseProducts [label="Out of Stock"];
+    
+    AddToCart -> ViewCart;
+    ViewCart -> EditCart;
+    EditCart -> MinOrderCheck [label="Checkout"];
+    
+    MinOrderCheck -> CartManagement [label="< $10"];
+    MinOrderCheck -> ValidPromo [label=">= $10"];
+    
+    ValidPromo -> CalculateShipping [label="Applied"];
+    ValidPromo -> CalculateShipping [label="None"];
+    
+    CalculateShipping -> PaymentGateway;
+    
+    PaymentGateway -> FinalConfirmation [label="Success"];
+    PaymentGateway -> PaymentGateway [label="Failure"];
+    
+    FinalConfirmation -> END;
+    
+    label = "\nE-commerce Checkout Logic Flow";
+    fontsize = 20;
+}
