@@ -1,0 +1,23 @@
+digraph ATM_System {
+    node [shape=box, fontname="Arial"];
+    
+    Start [shape=oval];
+    PIN_Check [label="Check PIN (Max 3)"];
+    Block [label="Block Card", color=red];
+    Validation [label="Check Balance / 20TL / Limit", shape=diamond];
+    Dispense [label="Dispense Cash & Receipt", color=green];
+    Another [label="Another Transaction?", shape=diamond];
+    
+    Start -> PIN_Check;
+    PIN_Check -> Block [label="Fail x3"];
+    PIN_Check -> Validation [label="Success"];
+    
+    Validation -> Validation [label="Invalid Input"];
+    Validation -> Dispense [label="Valid"];
+    
+    Dispense -> Another;
+    Another -> Validation [label="Yes"];
+    Another -> End [label="No"];
+    
+    End [shape=oval];
+}

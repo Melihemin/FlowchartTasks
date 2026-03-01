@@ -1,0 +1,29 @@
+graph TD
+    Start([Start]) --> Insert[Insert Card]
+    Insert --> PinInput[Input PIN]
+    PinInput --> Auth{PIN Correct?}
+    
+    Auth -- No --> Retries{Attempts < 3?}
+    Retries -- Yes --> PinInput
+    Retries -- No --> Block[Block Card & Exit]
+    
+    Auth -- Yes --> ShowBal[Display Balance]
+    ShowBal --> InputAmt[Enter Amount]
+    
+    InputAmt --> CheckBal{Balance >= Amount?}
+    CheckBal -- No --> Error1[Insufficient Funds]
+    CheckBal -- Yes --> CheckMult{Multiple of 20?}
+    
+    CheckMult -- No --> Error2[Invalid Increment]
+    CheckMult -- Yes --> CheckLimit{Under Daily Limit?}
+    
+    CheckLimit -- No --> Error3[Limit Exceeded]
+    CheckLimit -- Yes --> Success[Dispense Cash & Print Receipt]
+    
+    Error1 --> RetryDecide{Another Transaction?}
+    Error2 --> RetryDecide
+    Error3 --> RetryDecide
+    Success --> RetryDecide
+    
+    RetryDecide -- Yes --> ShowBal
+    RetryDecide -- No --> Eject[Eject Card & End]
