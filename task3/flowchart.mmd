@@ -1,0 +1,35 @@
+graph TD
+    Start([Start]) --> ID[Input National ID]
+    ID --> Verify{Validate ID?}
+    
+    Verify -- No --> ID
+    Verify -- Yes --> Menu[Main Menu Selection]
+
+    subgraph Module_1 [Module 1: Appointments]
+        Menu -- "1" --> Clinic[Select Clinic]
+        Clinic --> Doc[Select Doctor]
+        Doc --> Slots[Display & Select Time Slot]
+        Slots --> Confirm{Confirm?}
+        Confirm -- No --> Clinic
+        Confirm -- Yes --> SMS[Save & Send SMS]
+    end
+
+    subgraph Module_2 [Module 2: Test Results]
+        Menu -- "2" --> Exist{Tests Exist?}
+        Exist -- No --> NoRec[Display: No Records Found]
+        Exist -- Yes --> Ready{Results Ready?}
+        Ready -- No --> Wait[Show: Processing Message]
+        Ready -- Yes --> View[Display Results Data]
+        View --> PDF{Download PDF?}
+        PDF -- Yes --> GenPDF[Generate PDF File]
+    end
+
+    Menu -- "3" --> Exit([End System])
+    SMS --> Repeat{Another Action?}
+    NoRec --> Repeat
+    Wait --> Repeat
+    GenPDF --> Repeat
+    PDF -- No --> Repeat
+
+    Repeat -- Yes --> Menu
+    Repeat -- No --> Exit

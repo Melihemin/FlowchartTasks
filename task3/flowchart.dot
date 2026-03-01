@@ -1,0 +1,63 @@
+digraph HospitalSystem {
+    rankdir=TB;
+    node [shape=rectangle, style=rounded, fontname="Arial"];
+    compound=true;
+
+    // Entry Point
+    Start [shape=ellipse, label="Start"];
+    Verify [shape=diamond, label="ID Verified?"];
+    Menu [shape=diamond, label="Main Menu:\n1. Appt\n2. Results\n3. Exit"];
+
+    // Module 1 Cluster
+    subgraph cluster_appointment {
+        label = "Module 1: Appointment System";
+        style=filled;
+        color=lightgrey;
+        node [style=filled, color=white];
+        
+        SelectClinic -> SelectDoc -> SelectSlot -> ConfirmAppt;
+        ConfirmAppt [shape=diamond, label="Confirm?"];
+        SendSMS [label="Save & Send SMS"];
+        
+        ConfirmAppt -> SendSMS [label="Yes"];
+        ConfirmAppt -> SelectClinic [label="No"];
+    }
+
+    // Module 2 Cluster
+    subgraph cluster_results {
+        label = "Module 2: Lab Results";
+        style=filled;
+        color=aliceblue;
+        node [style=filled, color=white];
+        
+        CheckExist [shape=diamond, label="Records Found?"];
+        CheckReady [shape=diamond, label="Results Ready?"];
+        DisplayRes [label="Show Results"];
+        PDFDownload [shape=diamond, label="Download PDF?"];
+        
+        CheckExist -> CheckReady [label="Yes"];
+        CheckReady -> DisplayRes [label="Yes"];
+        DisplayRes -> PDFDownload;
+    }
+
+    // Main Transitions
+    Start -> Verify;
+    Verify -> Menu [label="Yes"];
+    Verify -> Start [label="No"];
+    
+    Menu -> SelectClinic [label="Option 1"];
+    Menu -> CheckExist [label="Option 2"];
+    Menu -> End [label="Option 3"];
+
+    // Return logic
+    Repeat [shape=diamond, label="Perform Another Action?"];
+    SendSMS -> Repeat;
+    CheckExist -> Repeat [label="No"];
+    CheckReady -> Repeat [label="No"];
+    PDFDownload -> Repeat;
+
+    Repeat -> Menu [label="Yes"];
+    Repeat -> End [label="No"];
+    
+    End [shape=ellipse, label="Exit"];
+}
