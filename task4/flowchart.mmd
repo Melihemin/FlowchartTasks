@@ -1,0 +1,37 @@
+flowchart TD
+    Start([Start Registration]) --> Login[Input ID & Password]
+    Login --> Auth{Auth Success?}
+    
+    Auth -- No --> Denied[Exit: Access Denied]
+    Auth -- Yes --> Init[Load Student GPA & History]
+    
+    Init --> Menu{Select Action}
+    
+    Menu -- "1. Add Course" --> View[Display Available Courses]
+    View --> Select[Input Course ID]
+    
+    %% Validation Gates
+    Select --> Gate1{Quota Full?}
+    Gate1 -- Yes --> Error1[Display: Course Full] --> Menu
+    Gate1 -- No --> Gate2{Prereqs Met?}
+    
+    Gate2 -- No --> Error2[Display: Missing Prereq] --> Menu
+    Gate2 -- Yes --> Gate3{Time Conflict?}
+    
+    Gate3 -- Yes --> Error3[Display: Schedule Overlap] --> Menu
+    Gate3 -- No --> Gate4{Total Credits > 35?}
+    
+    Gate4 -- Yes --> Error4[Display: Credit Limit Exceeded] --> Menu
+    Gate4 -- No --> Success[Add Course & Update Total Credits] --> Menu
+    
+    Menu -- "2. Drop Course" --> Drop[Remove Course & Update Credits] --> Menu
+    
+    Menu -- "3. Finish" --> Summary[Display Registration Summary]
+    
+    Summary --> GPA{GPA < 2.5?}
+    GPA -- Yes --> Pending[Status: Pending Advisor Approval]
+    GPA -- No --> Registered[Status: Registered]
+    
+    Pending --> Save[Save to Database]
+    Registered --> Save
+    Save --> End([End Session])

@@ -1,0 +1,41 @@
+digraph UniversityRegistration {
+    graph [rankdir=LR, fontname="Helvetica", nodesep=0.5];
+    node [fontname="Helvetica", shape=rect, style=filled, fillcolor="#f9f9f9"];
+    edge [fontname="Helvetica", fontsize=10];
+
+    // Entities
+    Student [shape=ellipse, fillcolor="#e1f5fe", label="Student User"];
+    DB [shape=cylinder, fillcolor="#fff9c4", label="University DB\n(Courses/Grades)"];
+    
+    // Process Blocks
+    subgraph cluster_logic {
+        label = "Registration Logic Engine";
+        style = dashed;
+        color = "#546e7a";
+        
+        Auth [label="Authentication"];
+        V_Quota [label="Capacity Filter"];
+        V_Prereq [label="Prerequisite Filter"];
+        V_Conflict [label="Conflict Filter"];
+        V_Credits [label="Credit Limit Filter"];
+        GPA_Check [label="GPA Rule Engine"];
+    }
+
+    // Flows
+    Student -> Auth [label="Login"];
+    Auth -> DB [label="Verify"];
+    
+    DB -> V_Quota [label="Check Slots"];
+    V_Quota -> V_Prereq [label="Pass"];
+    V_Prereq -> V_Conflict [label="Pass"];
+    V_Conflict -> V_Credits [label="Pass"];
+    
+    V_Credits -> DB [label="Commit Selection"];
+    
+    DB -> GPA_Check [label="Read GPA"];
+    GPA_Check -> Student [label="Final Status\n(Registered vs Pending)"];
+
+    // Error loops (simplified)
+    V_Quota -> Student [label="Fail", color=red];
+    V_Prereq -> Student [label="Fail", color=red];
+}
