@@ -1,0 +1,27 @@
+graph TD
+    Start([System Start]) --> Active{System Active?}
+    Active -- Yes --> Sensors[Read Motion & Door/Window Sensors]
+    Sensors --> Detect{Breach Detected?}
+    
+    Detect -- No --> Sensors
+    Detect -- Yes --> Owner{Homeowner Present?}
+    
+    Owner -- Yes --> Sensors
+    Owner -- No --> Camera[Activate Camera & Record]
+    
+    Camera --> Level{Determine Alarm Level}
+    Level -- Motion + Door --> L3[Level 3: High]
+    Level -- Door/Window --> L2[Level 2: Medium]
+    Level -- Motion Only --> L1[Level 1: Low]
+    
+    L1 & L2 & L3 --> Notify[Send SMS + App + Email]
+    Notify --> Wait[Wait 10s & Re-check]
+    
+    Wait --> Reset{User Reset?}
+    Reset -- Yes --> Clear[Deactivate Camera & Clear Alarm]
+    Reset -- No --> Sensors
+    Clear --> Sensors
+
+    style Sensors stroke:#333,stroke-width:2px
+    style Start fill:#dfd
+    style Notify fill:#fdd

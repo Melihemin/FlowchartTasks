@@ -1,0 +1,31 @@
+digraph SmartHomeSecurity {
+    rankdir=TB;
+    node [shape=rect, style=rounded, fontname="Verdana"];
+
+    // Nodes
+    Start [shape=ellipse, label="START", color=green];
+    ReadSensors [label="Sensor Reading Loop\n(Continuous)", penwidth=2];
+    OwnerCheck [label="Homeowner Present?", shape=diamond];
+    CameraAct [label="Activate Camera\n& Record Video"];
+    AlarmCalc [label="Determine Level\n(1-3)", shape=diamond];
+    Notify [label="NOTIFY\n(SMS, App, Email)", style=filled, color=orange];
+    ResetCheck [label="User Reset\nCommand?", shape=diamond];
+
+    // Edges
+    Start -> ReadSensors;
+    ReadSensors -> OwnerCheck [label="Triggered"];
+    ReadSensors -> ReadSensors [label="No Trigger"];
+    
+    OwnerCheck -> ReadSensors [label="Yes (Ignore)"];
+    OwnerCheck -> CameraAct [label="No"];
+    
+    CameraAct -> AlarmCalc;
+    AlarmCalc -> Notify [label="Level Assigned"];
+    
+    Notify -> ResetCheck;
+    ResetCheck -> ReadSensors [label="Continue Monitoring", color=blue];
+    ResetCheck -> ReadSensors [label="Yes (Reset)", style=dashed, color=red];
+
+    // Layout tweak
+    {rank=same; OwnerCheck; ReadSensors}
+}
